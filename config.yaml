@@ -1,0 +1,19 @@
+
+redis:
+  host: "127.0.0.1:6379"
+  auth: secret
+  TWMsgMQKey: "tw:msg"  # the MQ key of tweet record in MQ
+mysql:
+  user : "root"
+  password : "Tech2501"
+  host : "10.11.22.33"
+  port : "3306"
+  name : "cwi"
+smtp: 
+  host : "smtp.exmail.qq.com" 
+  port : "25"
+  user : "twm@ked.pub"  #发送邮件用户账号
+  password : "weEr32#swioP0"# 授权密码
+  nickname : "twitter moniter" #发送邮件昵称
+app:
+  port : ":8083"
