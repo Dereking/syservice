@@ -29,6 +29,8 @@ func (p *Program) Start(s service.Service) error {
 func (p *Program) run() {
 	// Do work here
 
+	logger.Info("listen and serve on", yamlConfig.App.Port)
+
 	r := gin.Default()
 	r.GET("/", index)
 	r.Run(yamlConfig.App.Port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
@@ -49,19 +51,14 @@ func main() {
 	options["SuccessExitStatus"] = "1 2 8 SIGKILL"
 
 	svcConfig := &service.Config{
-		Name:        "twapisvr",
-		DisplayName: "twitter api server",
-		Description: "this is a twitter api server",
-
-		//deamon 3
-		//dependencies : []string{"dummy.service"}
-		// dependencies: []string{
-		// 	"Requires=network.target",
-		// 	"After=network-online.target syslog.target"},
+		Name:        "testsvr",
+		DisplayName: "test api server",
+		Description: "this is a test api server",
+		//Arguments:   []string{"start"},
 		Option: options,
 	}
 
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	prg := &Program{}
 	s, err := service.New(prg, svcConfig)
@@ -78,34 +75,35 @@ func main() {
 		case "install":
 			err = s.Install()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("install err:", err)
 			}
-			fmt.Println("Service has been installed.")
+			fmt.Println("Service has been installed: ", svcConfig.Name)
 			return
-		case "uninstall":
-		case "remove":
+		case "uninstall", "remove":
 			err = s.Uninstall()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("uninstall err:", err)
 			}
 			fmt.Println("Service has been uninstalled.")
 			return
 		case "start":
+			fmt.Println("Service is staring.")
 			err = s.Start()
+			//err = s.Run()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("start err", err)
 			}
 			return
 		case "stop":
 			err = s.Stop()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("stop err", err)
 			}
 			return
 		case "restart":
 			err = s.Restart()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("restart err", err)
 			}
 			return
 		}

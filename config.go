@@ -57,7 +57,7 @@ func LoadConfig() {
 	yamlLoaded = true
 	// Print yaml data
 	//log.Printf("yamlData: %+v\n", yamlConfig)
-	log.Println("yamlConfig loaded")
+	//log.Println("yamlConfig loaded")
 }
 
 func init() {
