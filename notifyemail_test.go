@@ -1,4 +1,4 @@
-package main
+package syservice
 
 import ( // 导入包
 	"testing" // 导入testing包
