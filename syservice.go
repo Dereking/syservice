@@ -1,40 +1,46 @@
 package syservice
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"runtime"
 
 	"github.com/kardianos/service"
 )
 
 type Syservice struct {
-	logger service.Logger
+	logger      service.Logger
 	baseService *service.Service
+	program     *Program
 }
 
-func NewSyservice(pserv IService, conf ServiceConfig) (*Syservice,error) {
+func NewSyservice(pserv IService, conf ServiceConfig) (*Syservice, error) {
 	svcConfig := &service.Config{
-		Name:       conf.Name,
-		DisplayName: conf.DisplayName
+		Name:        conf.Name,
+		DisplayName: conf.DisplayName,
 		Description: conf.Description,
-
-	} 
-	baseService, err := service.New(pserv, svcConfig)
-	if err != nil {
-		return nil,err
 	}
 
-	log_, err = s.Logger(nil) 
+	baseProgr := NewProgram(pserv)
+
+	baseService, err := service.New(baseProgr, svcConfig)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
+	log_, err = s.Logger(nil)
+	if err != nil {
+		return nil, err
+	}
 
 	svc := &Syservice{
 		baseService: baseService,
-		logger: log_,
+		logger:      log_,
+		program:     baseProgr,
 	}
 	//svc.Init()
-	return svc,nil
+	return svc, nil
 }
 
 func (this *Syservice) Run() {
@@ -42,7 +48,6 @@ func (this *Syservice) Run() {
 	NCPU := runtime.NumCPU()
 	runtime.GOMAXPROCS(NCPU)
 
-	
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "install":

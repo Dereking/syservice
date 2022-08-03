@@ -4,35 +4,19 @@ import (
 	"github.com/kardianos/service"
 )
 
+type Status = service.Status
+
 type IService interface {
-	Init()
+	Start(s *Syservice) error
 
-	// Run should be called shortly after the program entry point.
-	// After Interface.Stop has finished running, Run will stop blocking.
-	// After Run stops blocking, the program must exit shortly after.
-	Run() error
+	// Stop provides a place to clean up program execution before it is terminated.
+	// It should not take more then a few seconds to execute.
+	// Stop should not call os.Exit directly in the function.
+	Stop(s *Syservice) error
 
-	// Start signals to the OS service manager the given service should start.
-	Start() error
-
-	// Stop signals to the OS service manager the given service should stop.
-	Stop() error
-
-	// Restart signals to the OS service manager the given service should stop then start.
-	Restart() error
-
-	// Install setups up the given service in the OS service manager. This may require
-	// greater rights. Will return an error if it is already installed.
-	Install() error
-
-	// Uninstall removes the given service from the OS service manager. This may require
-	// greater rights. Will return an error if the service is not present.
-	Uninstall() error
-
-	// String displays the name of the service. The display name if present,
-	// otherwise the name.
-	String() string
-
-	// Status returns the current service status.
-	Status() (service.Status, error)
+	//
+	// Shutdown provides a place to clean up program execution when the system is being shutdown.
+	// It is essentially the same as Stop but for the case where machine is being shutdown/restarted
+	// instead of just normally stopping the service. Stop won't be called when Shutdown is.
+	Shutdown(s *Syservice) error
 }
